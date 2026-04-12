@@ -27,7 +27,7 @@ def classify_state(
     classifier_mpo, mps_cluster, n_classes, Z0, class_labels, classify_type="classical"
 ):
     """
-    efficiently computes the inner product between MPO (classifier) and state image.
+    computes the inner product between MPO (classifier) and state image.
     Args:
         classifier_mpo: list of MPO tensors
         mps_cluster: list of MPS tensors (batched)
@@ -77,11 +77,10 @@ def classify_state(
 
         # return outcome, None, None
 
-        # ------- MODIFIED TO RETURN OVERLAPS ALSO -------
         # Capture the raw overlap (inner product)
         outcome_prob = outcome.reshape(N, n_classes) ** 2
 
-        # 2. Prepare Z_outcomes (Padding + Hadamard Transform)
+        # Prepare Z_outcomes (Padding + Hadamard Transform)
         # Calculate number of qubits needed (e.g., ceil(log2(10)) = 4 -> 16 dims)
         n_qubits = celg2(n_classes)
         # Ensure at least 1 qubit to avoid dimension mismatch if n_classes=1
@@ -394,6 +393,7 @@ def evaluate_accuracy(model, test_clusters, ensemble_mode=False):
     """
     Accuracy evaluation for either a full MPO or an ensemble of MPS chains.
 
+    Options:
     ensemble_mode=False: single MPO, one classify_state call with n_classes.
     ensemble_mode=True: list of 10 MPS chains, one call per chain, scores stacked
 
